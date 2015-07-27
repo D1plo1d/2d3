@@ -1,0 +1,36 @@
+{
+  "name": "mechly",
+  "version": "0.1.4",
+  "private": false,
+  "main": "src/javascripts/mechly.coffee",
+  "dependencies": {
+    "coffee-script": "1.9.3"
+  },
+  "devDependencies": {
+    "webpack": "*",
+    "webpack-dev-server": "*",
+    "css-loader": "*",
+    "style-loader": "*",
+    "stylus-loader": "*",
+    "extract-text-webpack-plugin": "*",
+    "babel-loader": "*",
+    "coffee-loader": "*",
+    "jade-loader": "*",
+    "react": "0.13.3",
+    "url-loader": "*",
+    "jsx-loader": "*",
+
+    "bootstrap": "*",
+    "lodash": "*",
+    "mousetrap": "*",
+    "interact.js": "*",
+    "classnames": "*",
+    "react": "*",
+    "react-keybinding": "*",
+    "react-tappable": "*"
+  },
+  "engines": {
+    "node": "~0.12.x",
+    "npm": "2.7.x"
+  }
+}

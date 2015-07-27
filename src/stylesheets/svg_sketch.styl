@@ -1,0 +1,66 @@
+$inactive_color = #309
+$active_color = #37D
+
+.sketch-body
+  height: 100%
+  overflow: hidden
+
+.sketch-body, .sketch-menu
+  -moz-user-select none
+  -webkit-user-select none
+  user-select none
+
+.canvas
+  shape-rendering: geometricPrecision
+
+  .shapes-group
+
+    // Shapes Base
+    stroke-width 2px /* This is overriden in js */
+    stroke $inactive_color
+    fill $inactive_color
+    [data-selected], *:hover
+      stroke $active_color
+      fill $active_color
+
+    // Dimensions
+    .dimension
+      cursor: pointer
+      stroke: #ccc
+
+  .points-group
+    stroke $inactive_color
+    fill $inactive_color
+    stroke-width: 10px
+    stroke-linecap: round
+
+    path:hover, path[data-selected]
+      cursor pointer
+      stroke $active_color
+      fill $active_color
+
+  .guides-group
+    stroke-width 1px
+    stroke-dasharray: 4 4;
+    stroke: rgb(51, 51, 51);
+
+  .text-group
+    // Note: The majority of text-group styles are set in JS
+
+    // Dimensions
+    &.dimension-text
+      &:hover
+        cursor: pointer
+
+@media screen and (max-width: 962px)
+  .canvas
+
+    .shapes-group
+      stroke-width 5px /* This is overriden in js */
+
+
+    .points-group
+      stroke-width: 40px
+
+    .guides-group
+      stroke-width 3px
