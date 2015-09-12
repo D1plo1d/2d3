@@ -1,4 +1,4 @@
-EventEmitter = require("eventemitter2").EventEmitter2
+EventEmitter = require("eventemitter3")
 
 module.exports = class Project extends EventEmitter
   sketches: []

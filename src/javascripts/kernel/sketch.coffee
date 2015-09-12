@@ -1,4 +1,4 @@
-EventEmitter = require("eventemitter2").EventEmitter2
+EventEmitter = require("eventemitter3")
 Shape = require("./shape.coffee")
 Point = require("./point.coffee")
 Constraint = {} #require("") # TODO: constraints
@@ -27,12 +27,13 @@ module.exports = class Sketch extends EventEmitter
     @["#{type}s"].push obj
     obj.sketch = @
     @_addDiffListener(type, obj) if type != "shape"
-    obj.on "delete", @_onObjDelete.fill type
+    obj.on "delete", @_onObjDelete.bind @, type
+    console.log "SHOULD EMIT ADD"
     @emit "add", obj, type
 
   _addDiffListener: (type, obj) ->
     id = @["#{type}s"].indexOf(obj)
-    fn = @_onDiff.fill id: id, objectType: type
+    fn = _.partial @_onDiff, id: id, objectType: type
     obj.on "diff", fn
 
   _onDiff: (objInfo, diff) =>

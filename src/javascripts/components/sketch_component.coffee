@@ -1,26 +1,28 @@
 React = require "react"
-{div, svg, g} = React.DOM
+{div, svg, g, ul, li} = React.DOM
 _ = require "lodash"
 Mousetrap = require "mousetrap"
 
 Shape = require("../kernel/shape.coffee")
 Point = require("../kernel/point.coffee")
 
-module.exports = SketchComponent = React.createClass
+module.exports = class SketchComponent extends React.Component
   displayName: "SketchComponent"
 
-  getInitialState: ->
+  state:
     enabled: true
     zoomLevel: 1
 
-  componentWillMount: () ->
-    @_sketchWillChange props.sketch
+  _shapeKeys: ["line"]
+
+  componentWillMount: ->
+    @_sketchWillChange @props.sketch
     @_updateKeyboardEvents()
 
   componentWillReceiveProps: (nextProps) ->
-    @_sketchWillChange nextProps.sketch if nextProps.sketch != props.sketch
+    @_sketchWillChange nextProps.sketch if nextProps.sketch != @props.sketch
 
-  componentWillUpdateState: (nextState) ->
+  componentWillUpdate: (nextProps, nextState) ->
     @_updateKeyboardEvents nextState.enabled if nextState.enabled != enabled
 
   incrementZoom: (increment = 0.1) ->
@@ -41,7 +43,11 @@ module.exports = SketchComponent = React.createClass
     groups = ["guides", "shapes", "points"]
     initialState = {}
     initialState[k] = [] for k in groups
-    @setState initialState
+    console.log "LOADING", initialState, @_afterSketchChange
+    @setState initialState, @_afterSketchChange
+
+  _afterSketchChange: (newSketch) ->
+    console.log("BINDING")
     # Binding a event listener
     newSketch.on "add", @_onAdd
     # Demo BS
@@ -55,19 +61,21 @@ module.exports = SketchComponent = React.createClass
       ["esc", @props.sketch.cancel,          "keyup"]
       # Zoom
       ["+", _.partial @incrementZoom, +0.1]
-      ["-", _partial @incrementZoom,  -0.1]
+      ["-", _.partial @incrementZoom,  -0.1]
     ]
-    Mousetrap[bind_or_unbind](args) for args in @_keyboardEvents
+    Mousetrap[bind_or_unbind](args...) for args in @_keyboardEvents
 
-  _addPoint: ->
+  _addPoint: (e) =>
+    console.log("add a point")
     @props.sketch.add new Point()
-    e?.stopImmediatePropagation()
+    e?.stopPropagation()
 
   _addShape: (type, e) =>
     @props.sketch.add new Shape(type: type)
-    e?.stopImmediatePropagation()
+    e?.stopPropagation()
 
   _onAdd: (obj, type) =>
+    console.log "ADDED #{type}"
     @setState "#{type}": @state[type].concat obj
 
   _onDelete: (obj, type) =>
@@ -77,10 +85,11 @@ module.exports = SketchComponent = React.createClass
     @props.sketch.add new Shape(type: "line")
 
   _svgStyles: ->
-    "stroke-dasharray": "100%"
-    "stroke-width": "100%"
+    strokeDasharray: "100%"
+    strokeWidth: "100%"
 
   _scaledGroup: (k) ->
+    console.log k, @state[k]
     components = @state[k].map (shape) => @props.shapeComponents[shape.type]
       key: shape.id
       kernelElement: shape
@@ -97,7 +106,7 @@ module.exports = SketchComponent = React.createClass
     div {},
       # Sketch
       div className: "sketch-body",
-        svg style: @_svgStyles,
+        svg style: @_svgStyles(),
           # Text
           g key: "textGroup"
           # Points
@@ -111,5 +120,13 @@ module.exports = SketchComponent = React.createClass
         div className: "hub",
           ul {},
             @_shapeKeys.map (k) =>
-              li className: "btn-#{k} #{k}", onClick: _.partial @_addShape, k
-            li className: "btn-point point", onClick: @_addPoint
+              li
+                className: "btn-#{k} #{k}",
+                onClick: _.partial(@_addShape, k),
+                key: k,
+                k
+            li
+              className: "btn-point point",
+              onClick: @_addPoint,
+              key: "point",
+              "point"

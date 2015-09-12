@@ -11,10 +11,10 @@ Point = require("../kernel/point.coffee")
 # - kernelElement
 # - bringToTop
 # - toKernelPx
-module.exports = PointComponent = React.createClass
+module.exports = class PointComponent extends React.Component
   displayName: "PointComponent"
 
-  getInitialState: ->
+  state: ->
     selected: false
     visible: false
 
@@ -25,6 +25,7 @@ module.exports = PointComponent = React.createClass
     @props.kernelElement.on "move", @forceUpdate
 
   componentDidMount: ->
+    console.log("ADDED")
     domNode = React.findDOMNode @refs.point
     @_draggable = interact(domNode)
       .origin('self')

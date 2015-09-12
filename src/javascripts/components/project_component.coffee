@@ -1,6 +1,7 @@
 React = require "react"
 {div} = React.DOM
 Keybinding = require "react-keybinding"
+SketchComponent = React.createFactory require "./sketch_component.coffee"
 
 Sketch = require("../kernel/sketch.coffee")
 
@@ -17,7 +18,7 @@ module.exports = ProjectComponent = React.createClass
   keybindings:
     "⌘N": (e) -> @newSketch()
 
-  getDefaultState: ->
+  getInitialState: ->
     sketch: new Sketch()
 
   # componentWillMount: ->
@@ -33,4 +34,4 @@ module.exports = ProjectComponent = React.createClass
   render: ->
     SketchComponent
       sketch: @state.sketch
-      shapeComponents: props.shapeComponents
+      shapeComponents: @props.shapeComponents

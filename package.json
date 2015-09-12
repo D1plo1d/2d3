@@ -28,7 +28,7 @@
     "react": "*",
     "react-keybinding": "*",
     "react-tappable": "*",
-    "eventemitter2": "*"
+    "eventemitter3": "*"
   },
   "engines": {
     "node": "~0.12.x",

@@ -1,4 +1,4 @@
-EventEmitter = require("eventemitter2").EventEmitter2
+EventEmitter = require("eventemitter3")
 
 module.exports = class SketchElement extends EventEmitter
   @idCounter = 0

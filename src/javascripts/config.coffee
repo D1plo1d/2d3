@@ -9,10 +9,10 @@ module.exports = Config =
   # eg.
   #   A component could be added via:
   #   `Mechly.config.shapeComponents.set "myShape", MyShape`
-  shapesComponents: new Map(
+  shapesComponents: new Map [
     ["point", require "./components/point_component.coffee"]
-    ["line",  require "./components/shapes/line_component.coffee"]
-  )
+    # ["line",  require "./components/shapes/line_component.coffee"]
+  ]
 
   # Helper method to convert shape components into factories
   shapeFactories: ->
