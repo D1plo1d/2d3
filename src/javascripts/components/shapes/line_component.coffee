@@ -1,7 +1,7 @@
 React = require "react"
 {div} = React.DOM
 
-Shape = require("../kernel/shape")
+Shape = require("../../kernel/shape.coffee")
 
 module.exports = LineComponent = React.createClass
   displayName: "LineComponent"

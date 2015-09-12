@@ -1,7 +1,7 @@
 React = require "react"
 {div} = React.DOM
 
-Point = require("../kernel/point")
+Point = require("../kernel/point.coffee")
 
 # The shared mixin for all shapes
 #

@@ -2,11 +2,10 @@ path = require "path"
 
 module.exports =
   entry:
-    # jsx: "./examples/jsx/example.jsx"
-    coffeescript: "./examples/coffeescript/example.coffee"
+    "examples/example_1": "./examples/example_1.coffee"
   devtool: "inline-source-map"
   output:
-    path: path.join _dirname, "dist"
+    path: "."
     filename: "[name].js"
   resolve:
     alias:

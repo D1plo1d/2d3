@@ -27,7 +27,8 @@
     "classnames": "*",
     "react": "*",
     "react-keybinding": "*",
-    "react-tappable": "*"
+    "react-tappable": "*",
+    "eventemitter2": "*"
   },
   "engines": {
     "node": "~0.12.x",

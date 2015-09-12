@@ -1,6 +1,6 @@
 EventEmitter = require("eventemitter2").EventEmitter2
-Shape = require("./shape")
-Point = require("./point")
+Shape = require("./shape.coffee")
+Point = require("./point.coffee")
 Constraint = {} #require("") # TODO: constraints
 
 module.exports = class Sketch extends EventEmitter

@@ -3,7 +3,7 @@ React = require "react"
 interact = require "interact.js"
 cx = require "classnames"
 
-Point = require("../kernel/point")
+Point = require("../kernel/point.coffee")
 
 # Renders a single point as a SVG path
 #

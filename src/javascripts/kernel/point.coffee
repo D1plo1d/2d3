@@ -1,4 +1,4 @@
-SketchElement = require "./sketch_element"
+SketchElement = require "./sketch_element.coffee"
 
 module.exports = class Point extends SketchElement
   x: 0, y: 0

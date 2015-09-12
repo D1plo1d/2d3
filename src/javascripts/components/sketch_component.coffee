@@ -3,8 +3,8 @@ React = require "react"
 _ = require "lodash"
 Mousetrap = require "mousetrap"
 
-Shape = require("../kernel/shape")
-Point = require("../kernel/point")
+Shape = require("../kernel/shape.coffee")
+Point = require("../kernel/point.coffee")
 
 module.exports = SketchComponent = React.createClass
   displayName: "SketchComponent"

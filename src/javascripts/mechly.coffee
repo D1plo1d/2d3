@@ -1,6 +1,6 @@
 React = require "react"
-ProjectComponent = React.createFactory require "./components/project"
-Project = require "./kernel/project"
+ProjectComponent = React.createFactory require "./components/project_component.coffee"
+Project = require "./kernel/project.coffee"
 
 module.exports = class Mechly extends React.Component
 
@@ -12,4 +12,4 @@ module.exports = class Mechly extends React.Component
     ProjectComponent @props
 
 # Global configuration
-_.merge Mechly, config: require "./config"
+_.merge Mechly, config: require "./config.coffee"

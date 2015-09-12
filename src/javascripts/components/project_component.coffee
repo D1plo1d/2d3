@@ -2,7 +2,7 @@ React = require "react"
 {div} = React.DOM
 Keybinding = require "react-keybinding"
 
-Sketch = require("../kernel/sketch")
+Sketch = require("../kernel/sketch.coffee")
 
 # This will eventually be the place that we put multiple sketches.
 # It will also have a project "model" in the kernel.
