@@ -25,6 +25,11 @@ module.exports =
         loader: "coffee"
       }
       {
+        test: /\.jsx?$/
+        exclude: /^(node_modules|dist|scripts)/
+        loader: "babel?stage=0"
+      }
+      {
         test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
         loader: "url-loader"
       }

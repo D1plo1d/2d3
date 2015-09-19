@@ -34,4 +34,3 @@ module.exports = ProjectComponent = React.createClass
   render: ->
     SketchComponent
       sketch: @state.sketch
-      shapeComponents: @props.shapeComponents

@@ -5,6 +5,7 @@ module.exports = class Point extends SketchElement
   placed: false
   # Default snapping distance for all points
   @snapDistance = 10
+  type: "point"
 
   place: () ->
     @placed = true

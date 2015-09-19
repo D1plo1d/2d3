@@ -2,6 +2,7 @@ React = require "react"
 {div, svg, g, ul, li} = React.DOM
 _ = require "lodash"
 Mousetrap = require "mousetrap"
+config = require "../config.coffee"
 
 Shape = require("../kernel/shape.coffee")
 Point = require("../kernel/point.coffee")
@@ -23,34 +24,26 @@ module.exports = class SketchComponent extends React.Component
     @_sketchWillChange nextProps.sketch if nextProps.sketch != @props.sketch
 
   componentWillUpdate: (nextProps, nextState) ->
-    @_updateKeyboardEvents nextState.enabled if nextState.enabled != enabled
+    if nextState.enabled != @state.enabled
+      @_updateKeyboardEvents nextState.enabled
 
   incrementZoom: (increment = 0.1) ->
     @setState zoomLevel: @state.zoomLevel + increment
 
   bringToFront: (point) ->
-    # Re-order the points array so that the brought-to-the-front point is the
-    # first.
-    points = _.remove @state.points, point
-    points.concat [point]
-    @setState points: points
+  #   # Re-order the points array so that the brought-to-the-front point is the
+  #   # first.
+  #   points = _.remove @state.points, point
+  #   points.concat [point]
+  #   @setState points: points
 
-  toKernelPx: (px) ->
+  toKernelPx: (px) =>
     px / @state.zoomLevel
 
   _sketchWillChange: (newSketch) ->
-    # Resetting each shape factory's list of components
-    groups = ["guides", "shapes", "points"]
-    initialState = {}
-    initialState[k] = [] for k in groups
-    console.log "LOADING", initialState, @_afterSketchChange
-    @setState initialState, @_afterSketchChange
-
-  _afterSketchChange: (newSketch) ->
-    console.log("BINDING")
-    # Binding a event listener
-    newSketch.on "add", @_onAdd
-    # Demo BS
+    # Resetting the list of guides
+    @setState {guides: []}
+    newSketch.on "add", => @forceUpdate()
     @test()
 
   _updateKeyboardEvents: (enable = @state.enabled) ->
@@ -66,7 +59,6 @@ module.exports = class SketchComponent extends React.Component
     Mousetrap[bind_or_unbind](args...) for args in @_keyboardEvents
 
   _addPoint: (e) =>
-    console.log("add a point")
     @props.sketch.add new Point()
     e?.stopPropagation()
 
@@ -74,28 +66,26 @@ module.exports = class SketchComponent extends React.Component
     @props.sketch.add new Shape(type: type)
     e?.stopPropagation()
 
-  _onAdd: (obj, type) =>
-    console.log "ADDED #{type}"
-    @setState "#{type}": @state[type].concat obj
-
-  _onDelete: (obj, type) =>
-    @setState "#{type}": _.remove @state[type], obj
-
   test: ->
-    @props.sketch.add new Shape(type: "line")
+    p = new Point()
+    p.x = 10
+    p.y = 10
+    # p.placed = true
+    @props.sketch.add p
+    # @props.sketch.add new Shape(type: "line")
 
   _svgStyles: ->
     strokeDasharray: "100%"
     strokeWidth: "100%"
 
   _scaledGroup: (k) ->
-    console.log k, @state[k]
-    components = @state[k].map (shape) => @props.shapeComponents[shape.type]
-      key: shape.id
-      kernelElement: shape
-      bringToFront: @bringToFront
-      toKernelPx: @toKernelPx
-      sketch: @props.sketch
+    components = @props.sketch[k].map (shape) =>
+      config.shapeFactories()[shape.type]
+        key: shape.id
+        kernelElement: shape
+        bringToFront: @bringToFront
+        toKernelPx: @toKernelPx
+        sketch: @props.sketch
     attrs =
       key: "#{k}Group"
       scaleX: @state.zoomLevel
@@ -112,7 +102,7 @@ module.exports = class SketchComponent extends React.Component
           # Points
           @_scaledGroup "points"
           # Guides
-          @_scaledGroup "guides"
+          # @_scaledGroup "guides"
           # Other shapes
           @_scaledGroup "shapes"
       # Tool Selection Menu
