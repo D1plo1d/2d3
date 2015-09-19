@@ -20,13 +20,17 @@ module.exports = function clickDrag(opts = {}) {
       state = {
         isMouseDown: false,
         isMoving: false,
-        mouseDownX: 0,
-        mouseDownY: 0,
+        mouseDownX: null,
+        mouseDownY: null,
         x: 0,
         y: 0,
         deltaX: 0,
         deltaY: 0,
-        simulateMouseDown: () => this.setState({isMouseDown: true}),
+        simulateMouseDown: () => this.setState({
+          isMouseDown: true,
+          mouseDownX: null,
+          mouseDownY: null
+        }),
         simulateMouseUp: () => this.setState({isMouseDown: false}),
       }
 
@@ -72,8 +76,8 @@ module.exports = function clickDrag(opts = {}) {
           isMoving: false,
           mouseDownX: x,
           mouseDownY: y,
-          x: pt.clientX,
-          y: pt.clientY,
+          x: x,
+          y: y,
           deltaX: 0,
           deltaY: 0,
         })
@@ -113,6 +117,14 @@ module.exports = function clickDrag(opts = {}) {
             this._setMousePosition(pt.clientX, pt.clientY)
           }
           else {
+            // Setting the mousedown position on first move for simulated mouse
+            // downs
+            if (this.state.mouseDownX == null) {
+              this.setState({
+                mouseDownX: pt.clientX,
+                mouseDownY: pt.clientY,
+              })
+            }
             this.setState(objectAssign({
               isMoving: true,
               deltaX: pt.clientX - this.state.mouseDownX,

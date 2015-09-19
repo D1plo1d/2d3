@@ -27,10 +27,12 @@ export default class PointComponent extends React.Component {
     this.setState({visible: this.props.kernelElement.placed})
     // Binding events
     this.props.kernelElement.on("move", this.forceUpdate)
+    // Starting the placement of the point
+    if (!this.props.kernelElement.placed) this._startPlacement()
   }
 
-  componentDidMount() {
-    if (!this.props.kernelElement.placed) this._startPlacement()
+  componentWillUnmount() {
+    this.props.kernelElement.off("move", this.forceUpdate)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,9 +47,7 @@ export default class PointComponent extends React.Component {
     }
   }
 
-
   _startPlacement() {
-    console.log("START PLACEMENT")
     this.props.clickDrag.simulateMouseDown()
   }
 
@@ -56,19 +56,16 @@ export default class PointComponent extends React.Component {
     this.setState({
       selected: true,
       visible: true,
-      // Saving the current kernel element position for use in _onDrag
-      dragStartKernelPosition: ["x", "y"].map((k) => this.props.kernelElement[k]),
     })
     this.props.bringToFront()
   }
 
   _onDrag(nextProps) {
-    console.log("MOVE DRAG")
     // Calculating the new position of the point in kernel pixels
     // (the kernel's zoom-independent unit of distance)
-    let position = _.map(["deltaX", "deltaY"], (k, i) =>
-      this.props.toKernelPx(nextProps.clickDrag[k]) +
-      this.state.dragStartKernelPosition[i]
+    // TODO: This should be made offset independent
+    let position = _.map(["x", "y"], (k, i) =>
+      this.props.toKernelPx(nextProps.clickDrag[k] - 10)
     )
     // Calculating the snap distance in kernel pixels
     let snapDistance = this.props.toKernelPx(Point.snapDistance)
