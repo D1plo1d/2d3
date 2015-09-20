@@ -1,4 +1,5 @@
 path = require "path"
+ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports =
   entry:
@@ -10,15 +11,24 @@ module.exports =
   resolve:
     alias:
       mechly: path.join(__dirname, "src", "javascripts", "mechly.coffee")
+  plugins: [
+    new ExtractTextPlugin 'app.css', allChunks: true
+  ]
   module:
     loaders: [
       {
-        test: /\.css$/
-        loader: "style!css"
+        test: /\.styl$/,
+        loader: ExtractTextPlugin.extract('style',
+          'css?modules&importLoaders=1&'+
+          'localIdentName=[name]__[local]___[hash:base64:5]!stylus-loader'
+        )
       }
       {
-        test: /\.styl$/
-        loader: "style-loader!css-loader!stylus-loader"
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style',
+          'css?modules&importLoaders=1&'+
+          'localIdentName=[name]__[local]___[hash:base64:5]'
+        )
       }
       {
         test: /\.coffee$/

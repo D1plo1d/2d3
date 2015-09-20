@@ -1,7 +1,7 @@
 React = require "react"
 {div} = React.DOM
 Keybinding = require "react-keybinding"
-SketchComponent = React.createFactory require "./sketch_component.coffee"
+SketchComponent = React.createFactory require "./sketch.js"
 
 Sketch = require("../kernel/sketch.coffee")
 

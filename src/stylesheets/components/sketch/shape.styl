@@ -1,0 +1,18 @@
+.shapes-group
+
+  // Shapes Base
+  stroke-width 2px /* This is overriden in js */
+  stroke $inactive_color
+  fill $inactive_color
+  [data-selected], *:hover
+    stroke $active_color
+    fill $active_color
+
+  // Dimensions
+  .dimension
+    cursor: pointer
+    stroke: #ccc
+
+@media screen and (max-width: 962px)
+  .shapes-group
+    stroke-width 5px /* This is overriden in js */

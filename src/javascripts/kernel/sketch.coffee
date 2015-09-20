@@ -28,7 +28,6 @@ module.exports = class Sketch extends EventEmitter
     obj.sketch = @
     @_addDiffListener(type, obj) if type != "shape"
     obj.on "delete", @_onObjDelete.bind @, type
-    console.log "SHOULD EMIT ADD"
     @emit "add", obj, type
 
   _addDiffListener: (type, obj) ->

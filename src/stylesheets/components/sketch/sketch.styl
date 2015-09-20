@@ -1,0 +1,44 @@
+$inactive_color = #309
+$active_color = #37D
+
+@import "point"
+@import "shape"
+
+.svg-container
+  height: 80%
+  overflow: hidden
+
+.svg-container, .menu
+  -moz-user-select none
+  -webkit-user-select none
+  user-select none
+
+.svg
+  shape-rendering geometricPrecision
+  stroke-dasharray 100%
+  stroke-width 100%
+  width 100%
+  height 100%
+
+// Dimension text (todo: move to their own file)
+// -----------------------------------------------------------------------------
+
+// .text-group
+//   // Note: The majority of text-group styles are set in JS
+
+//   // Dimensions
+//   &.dimension-text
+//     &:hover
+//       cursor: pointer
+
+// Guides (todo: move to their own file)
+// -----------------------------------------------------------------------------
+
+// .guides-group
+//   stroke-width 1px
+//   stroke-dasharray: 4 4;
+//   stroke: rgb(51, 51, 51);
+
+// @media screen and (max-width: 962px)
+//   .guides-group
+//     stroke-width 3px

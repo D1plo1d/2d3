@@ -1,5 +1,5 @@
 SketchElement = require "./sketch_element.coffee"
-_ = require "lodash"
+# _ = require "lodash"
 
 module.exports = class Shape extends SketchElement
   points: null

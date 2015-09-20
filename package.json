@@ -18,6 +18,8 @@
     "coffee-loader": "*",
     "jade-loader": "*",
     "react": "0.13.3",
+    "react-css-modules": "*",
+    "babel-plugin-lodash": "*",
     "url-loader": "*",
     "jsx-loader": "*",
     "bootstrap": "*",

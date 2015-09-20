@@ -1,0 +1,14 @@
+.points-group
+  stroke $inactive_color
+  fill $inactive_color
+  stroke-width: 1px
+  stroke-linecap: round
+
+  path:hover, path[data-selected]
+    cursor pointer
+    stroke $active_color
+    fill $active_color
+
+@media screen and (max-width: 962px)
+  .points-group
+    stroke-width: 40px

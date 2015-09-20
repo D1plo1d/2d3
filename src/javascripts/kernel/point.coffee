@@ -53,7 +53,6 @@ module.exports = class Point extends SketchElement
 
   merge: (p2) ->
     return if p2.isDeleted() or @isDeleted()
-    $nodes = $().add(p2.$node).add(@$node)
     for point in [@, p2]
       point.emit "merge", point, deadPoint: p2, mergedPoint: @
     p2.delete()

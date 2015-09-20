@@ -1,9 +1,8 @@
-let React = require("react")
+import React from "react"
 let {circle} = React.DOM
-let clickDrag = require("./clickdrag.jsx")
-let cx = require("classnames")
-
-let Point = require("../kernel/point.coffee")
+import clickDrag from "./clickdrag.jsx"
+import cx from "classnames"
+import Point from "../kernel/point.coffee"
 
 /* Renders a single point as a SVG path
  *
