@@ -14,20 +14,19 @@ module.exports = function clickDrag(opts = {}) {
 
     return class extends React.Component {
       state = {
+        simulatedMouseDown: false,
         isMouseDown: false,
         isMoving: false,
-        mouseDownX: null,
-        mouseDownY: null,
+        mouseDownX: 0,
+        mouseDownY: 0,
         x: 0,
         y: 0,
         deltaX: 0,
         deltaY: 0,
         simulateMouseDown: () => this.setState({
-          isMouseDown: true,
-          mouseDownX: null,
-          mouseDownY: null
+          simulatedMouseDown: true
         }),
-        simulateMouseUp: () => this.setState({isMouseDown: false}),
+        simulateMouseUp: () => this._onMouseUp(),
       }
 
       constructor() {
@@ -81,7 +80,7 @@ module.exports = function clickDrag(opts = {}) {
 
       _onMouseDown(e) {
         // only left mouse button
-        if(touch || e.button === 0) {
+        if(touch || e.button === 0 || this.state.simulatedMouseDown) {
           var pt = (e.changedTouches && e.changedTouches[0]) || e
 
           this._setMousePosition(pt.clientX, pt.clientY)
@@ -91,18 +90,19 @@ module.exports = function clickDrag(opts = {}) {
       }
 
       _onMouseUp(e) {
-        if(this.state.isMouseDown) {
+        if(this.state.isMouseDown || this.state.simulatedMouseDown) {
           this.setState({
+            simulatedMouseDown: false,
             isMouseDown: false,
             isMoving: false,
           })
 
-          e.stopImmediatePropagation()
+          if (e != null) e.stopImmediatePropagation()
         }
       }
 
       _onMouseMove(e) {
-        if(this.state.isMouseDown) {
+        if(this.state.isMouseDown || this.state.simulatedMouseDown) {
           var pt = (e.changedTouches && e.changedTouches[0]) || e
 
           var isUsingSpecialKeys = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey
@@ -110,15 +110,10 @@ module.exports = function clickDrag(opts = {}) {
             this._wasUsingSpecialKeys = isUsingSpecialKeys
             this._setMousePosition(pt.clientX, pt.clientY)
           }
+          else if (this.state.simulatedMouseDown && !this.state.isMouseDown) {
+            this._onMouseDown(e)
+          }
           else {
-            // Setting the mousedown position on first move for simulated mouse
-            // downs
-            if (this.state.mouseDownX == null) {
-              this.setState({
-                mouseDownX: pt.clientX,
-                mouseDownY: pt.clientY,
-              })
-            }
             this.setState(objectAssign({
               isMoving: true,
               deltaX: pt.clientX - this.state.mouseDownX,

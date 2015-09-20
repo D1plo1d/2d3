@@ -27,7 +27,6 @@ export default class PointComponent extends React.Component {
     this.setState({visible: this.props.kernelElement.placed})
     // Binding events
     this.props.kernelElement.on("move", this._onMove)
-    console.log("ADDED. Placed:", this.props.kernelElement.placed)
     // Starting the placement of the point
     if (!this.props.kernelElement.placed) this._startPlacement()
   }
@@ -57,11 +56,13 @@ export default class PointComponent extends React.Component {
   }
 
   _onDragStart(nextProps) {
+    this.props.bringToFront()
+    this._onDrag(nextProps)
     this.setState({
       selected: true,
       visible: true,
     })
-    this.props.bringToFront()
+    console.log(nextProps.clickDrag)
   }
 
   _onDrag(nextProps) {
@@ -97,7 +98,9 @@ export default class PointComponent extends React.Component {
       cx: this.props.kernelElement.x,
       cy: this.props.kernelElement.y,
       r: 5,
-      visibility: this.state.visible,
+      style: {
+        visibility: this.state.visible ? "visible" : "hidden",
+      },
     })
   }
 
