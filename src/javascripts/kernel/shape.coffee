@@ -1,4 +1,5 @@
 SketchElement = require "./sketch_element.coffee"
+_ = require "lodash"
 
 module.exports = class Shape extends SketchElement
   points: null
@@ -35,7 +36,7 @@ module.exports = class Shape extends SketchElement
   isFullyDefined: ->
     return true if @_previouslyFullyDefined
     hasEnoughPoints = @points.length == @requiredPointCount()
-    @_previouslyFullyDefined = hasEnoughPoints and @points.last()?.placed
+    @_previouslyFullyDefined = hasEnoughPoints and _.last(@points)?.placed
 
   requiredPointCount: ->
     switch @type

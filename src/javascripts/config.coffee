@@ -11,7 +11,7 @@ module.exports = Config =
   #   `Mechly.config.shapeComponents.set "myShape", MyShape`
   shapeComponents: {
     point: require "./components/point.js"
-    # line: require "./components/shapes/line_component.coffee"
+    line: require "./components/shapes/line.js"
   }
 
   # Helper method to convert shape components into factories

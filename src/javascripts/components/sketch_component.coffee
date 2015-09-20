@@ -43,8 +43,11 @@ module.exports = class SketchComponent extends React.Component
   _sketchWillChange: (newSketch) ->
     # Resetting the list of guides
     @setState {guides: []}
-    newSketch.on "add", => @forceUpdate()
+    newSketch.on "add", @_onAdd
     @test()
+
+  _onAdd: =>
+    @forceUpdate()
 
   _updateKeyboardEvents: (enable = @state.enabled) ->
     bind_or_unbind = if enable then "bind" else "unbind"
@@ -71,8 +74,8 @@ module.exports = class SketchComponent extends React.Component
     p.x = 10
     p.y = 10
     # p.placed = true
-    @props.sketch.add p
-    # @props.sketch.add new Shape(type: "line")
+    # @props.sketch.add p
+    @props.sketch.add new Shape(type: "line")
 
   _svgStyles: ->
     strokeDasharray: "100%"

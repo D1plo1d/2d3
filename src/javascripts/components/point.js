@@ -21,17 +21,13 @@ export default class PointComponent extends React.Component {
     visible: false,
   }
 
-  constructor() {
-    super()
-    this._onMove = this._onMove.bind(this)
-  }
-
   componentWillMount() {
     // Hiding the dom element until we establish the mouse position for
     // placement
     this.setState({visible: this.props.kernelElement.placed})
     // Binding events
     this.props.kernelElement.on("move", this._onMove)
+    console.log("ADDED. Placed:", this.props.kernelElement.placed)
     // Starting the placement of the point
     if (!this.props.kernelElement.placed) this._startPlacement()
   }
@@ -52,7 +48,7 @@ export default class PointComponent extends React.Component {
     }
   }
 
-  _onMove() {
+  _onMove = () => {
     this.forceUpdate()
   }
 
@@ -61,7 +57,6 @@ export default class PointComponent extends React.Component {
   }
 
   _onDragStart(nextProps) {
-    console.log("DRAG START")
     this.setState({
       selected: true,
       visible: true,

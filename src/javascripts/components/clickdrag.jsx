@@ -12,10 +12,6 @@ module.exports = function clickDrag(opts = {}) {
     var resetOnSpecialKeys = opts.resetOnSpecialKeys || false
     var getSpecificEventData = opts.getSpecificEventData || function() { return {} }
 
-    var onDragStart = opts.onDragStart || noop
-    var onDragStop = opts.onDragStop || noop
-    var onDragMove = opts.onDragMove || noop
-
     return class extends React.Component {
       state = {
         isMouseDown: false,
@@ -90,8 +86,7 @@ module.exports = function clickDrag(opts = {}) {
 
           this._setMousePosition(pt.clientX, pt.clientY)
 
-          onDragStart(e)
-          e.stopPropagation()
+          e.stopImmediatePropagation()
         }
       }
 
@@ -102,8 +97,7 @@ module.exports = function clickDrag(opts = {}) {
             isMoving: false,
           })
 
-          onDragStop(e)
-          e.stopPropagation()
+          e.stopImmediatePropagation()
         }
       }
 
@@ -134,8 +128,7 @@ module.exports = function clickDrag(opts = {}) {
             }, getSpecificEventData(e)))
           }
 
-          onDragMove(e)
-          e.stopPropagation()
+          e.stopImmediatePropagation()
         }
       }
 

@@ -60,7 +60,7 @@ module.exports = class Sketch extends EventEmitter
     @selected.length > 0
 
   updateSelection: ->
-    newSelection = _.uniq @selected.union(@_selectedChildPoints())
+    newSelection = _.uniq @selected.concat(@_selectedChildPoints())
     s.select() unless _.includes @selected, s for s in newSelection
     @selected = newSelection
 
