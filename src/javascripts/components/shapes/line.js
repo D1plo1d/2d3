@@ -1,9 +1,11 @@
-let React = require("react")
+import React from "react"
 let {div} = React.DOM
 
-let Shape = require("../../kernel/shape.coffee")
-let ShapeComponent = require("../shape.js")
+import Shape from "../../kernel/shape.coffee"
+import ShapeComponent from "../shape.js"
+import specialKeys from "../../higher_order_components/special_keys.js"
 
+@specialKeys()
 export default class LineComponent extends ShapeComponent {
   displayName = "LineComponent"
 
@@ -12,6 +14,7 @@ export default class LineComponent extends ShapeComponent {
 
   state = Object.assign({}, ShapeComponent.defaultState, {
     numberOfPoints: 2,
+    specialKeys: {shift: false}
   })
 
   create() {
@@ -24,18 +27,17 @@ export default class LineComponent extends ShapeComponent {
   }
 
   _path() {
-    let p = this.props.kernelElement.points
+    let p = this.props.kernelElement.points.filter((p) => p.initialized)
     return p.length == 2 ? `M${p[0].x},${p[0].y}L${p[1].x},${p[1].y}` : ""
   }
 
-  // TODO: polygons
-  // onFullyDefine() {
-  //   if (!this.parent.shift) return
-  //   // in shift mode after a line is completed start another line to draw a
-  //   // polygon.
-  //   this.sketch.add(new Shape({
-  //     type: this.shapeType,
-  //     points: [this.props.kernelElement.points[1]],
-  //   }))
-  // }
+  onFullyDefine = () => {
+    if (!this.props.specialKeys.shift) return
+    // in shift mode after a line is completed start another line to draw a
+    // polygon.
+    this.props.sketch.add(new Shape({
+      type: this.shapeType,
+      points: [this.props.kernelElement.points[1]],
+    }))
+  }
 }

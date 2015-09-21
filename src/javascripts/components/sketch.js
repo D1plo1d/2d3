@@ -42,11 +42,11 @@ export default class SketchComponent extends React.Component {
   }
 
   bringToFront(point) {
-  //   // Re-order the points array so that the brought-to-the-front point is the
-  //   // first.
-  //   points = _.remove this.state.points, point
-  //   points.concat [point]
-  //   this.setState points: points
+    // // Re-order the points array so that the brought-to-the-front point is the
+    // // first.
+    // points = _.remove this.state.points, point
+    // points.concat [point]
+    // this.setState points: points
   }
 
   toKernelPx = (px) => {
@@ -56,11 +56,12 @@ export default class SketchComponent extends React.Component {
   _sketchWillChange(newSketch) {
     // Resetting the list of guides
     this.setState({guides: []})
-    newSketch.on("add", this._onAdd)
+    newSketch.on("add", this._onChange)
+    newSketch.on("delete", this._onChange)
     this.test()
   }
 
-  _onAdd = () => {
+  _onChange = () => {
     this.forceUpdate()
   }
 

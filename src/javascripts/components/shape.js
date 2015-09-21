@@ -40,10 +40,6 @@ export default class ShapeComponent extends React.Component {
       .on("addPoint", this._onAddPoint)
       .on("removePoint", this._onRemovePoint)
 
-    this.setState({
-      fullyDefined: this.props.kernelElement.isFullyDefined()
-    })
-
     for (let p in this.props.kernelElement.points) this._onAddPoint(p)
 
     // call the shape's create method with the ui flag for shape-specific
@@ -65,9 +61,8 @@ export default class ShapeComponent extends React.Component {
     this.props.sketch.updateSelection()
   }
 
-  _onFullyDefine = () => {
-    this.setState({fullyDefined: true})
-    if (this.onFullyDefine != null) this.onFullyDefine()
+  onFullyDefine() {
+    /* noop */
   }
 
   _onRemovePoint = (point) => {

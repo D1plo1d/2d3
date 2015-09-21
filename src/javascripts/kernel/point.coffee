@@ -2,6 +2,7 @@ SketchElement = require "./sketch_element.coffee"
 
 module.exports = class Point extends SketchElement
   x: 0, y: 0
+  initialized: false
   placed: false
   # Default snapping distance for all points
   @snapDistance = 10
@@ -16,6 +17,7 @@ module.exports = class Point extends SketchElement
   # orient themselves to anchor the point at the given position.
   # If anchor is set to false this is a constraint solver generated movement.
   move: (@x, @y, input = true, snapDistance = Point.snapDistance) ->
+    @initialized = true
     @_snapToNearestPoint snapDistance if input and @sketch?
     @emit "move"
     return if input

@@ -1,6 +1,6 @@
 import React from "react"
 let {circle} = React.DOM
-import clickDrag from "./clickdrag.jsx"
+import clickDrag from "../higher_order_components/clickdrag.jsx"
 import cx from "classnames"
 import Point from "../kernel/point.coffee"
 
@@ -61,7 +61,6 @@ export default class PointComponent extends React.Component {
       selected: true,
       visible: true,
     })
-    console.log(nextProps.clickDrag)
   }
 
   _onDrag(nextProps) {

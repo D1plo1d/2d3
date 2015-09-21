@@ -43,7 +43,7 @@ module.exports = class SketchElement extends EventEmitter
     # delete the sketch element
     @emit "delete", @, originalTarget: originalTarget
     @emit "diff", type: "delete"
-    @removeEvent() # (removes all event listeners)
+    @removeAllListeners()
 
   cancel: ->
     return
