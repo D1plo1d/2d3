@@ -1,36 +1,69 @@
 var React = require('react')
 
+let globalState = {}
+
+let updateShift = function(e) {
+  let isShift = !!e.shiftKey
+  globalState.shift = isShift
+  console.log("UPDATE SHIFT", globalState)
+}
+
+let onFirstMouseMove = function(e) {
+  console.log("FIRST MOUSE MOVE")
+  updateShift(e)
+  window.removeEventListener("mousemove",  onFirstMouseMove)
+}
+
+window.addEventListener("mousemove", onFirstMouseMove)
+
+window.addEventListener("keydown", function (e) {
+  updateShift(e)
+})
+
+window.addEventListener("keyup", function (e) {
+  updateShift(e)
+})
+
 module.exports = function specialKeys(opts = {}) {
   return function(childComponent) {
     return class extends React.Component {
+
       state = {
-        shift: false,
+        specialKeys: globalState,
+        enabled: true,
       }
 
       componentWillMount() {
-        window.addEventListener("keydown", this.onKeyDown)
-        window.addEventListener("keyup", this.onKeyUp)
+        window.addEventListener("keydown", this.onKeyUpOrDown)
+        window.addEventListener("keyup", this.onKeyUpOrDown)
       }
 
       componentWillUnmount() {
-        window.removeEventListener("keydown", this.onKeyDown)
-        window.removeEventListener("keydown", this.onKeyUp)
+        this._removeListeners()
       }
 
-      onKeyDown = (e) => {
-        let isShift = !!e.shiftKey
-        this.setState({shift: isShift})
+      onKeyUpOrDown = (e) => {
+        console.log("CHANGE!", globalState)
+        this.setState({specialKeys: globalState})
       }
 
-      onKeyUp = (e) => {
-        let isShift = !!e.shiftKey
-        this.setState({shift: isShift})
+      disableSpecialKeys = () => {
+        this._removeListeners()
+        this.setState({enabled: false})
+      }
+
+      _removeListeners() {
+        window.removeEventListener("keydown", this.onKeyUpOrDown)
+        window.removeEventListener("keyup", this.onKeyUpOrDown)
       }
 
       render() {
         let childProps = Object.assign({}, this.props, {
-          specialKeys: this.state,
+          disableSpecialKeys: this.disableSpecialKeys,
         })
+        if (this.state.enabled) {
+          childProps.specialKeys = this.state.specialKeys
+        }
         return React.createElement(childComponent, childProps)
       }
 

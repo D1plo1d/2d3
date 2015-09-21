@@ -40,7 +40,7 @@ export default class ShapeComponent extends React.Component {
       .on("addPoint", this._onAddPoint)
       .on("removePoint", this._onRemovePoint)
 
-    for (let p in this.props.kernelElement.points) this._onAddPoint(p)
+    for (let p of this.props.kernelElement.points) this._onAddPoint(p)
 
     // call the shape's create method with the ui flag for shape-specific
     // intialization

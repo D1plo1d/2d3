@@ -91,12 +91,12 @@ export default class SketchComponent extends React.Component {
   }
 
   test() {
-    let p = new Point()
-    p.x = 10
-    p.y = 10
+    // let p = new Point()
+    // p.x = 10
+    // p.y = 10
     // p.placed = true
     // this.props.sketch.add p
-    this.props.sketch.add(new Shape({type: "line"}))
+    // this.props.sketch.add(new Shape({type: "line"}))
   }
 
   _scaledGroup(k) {

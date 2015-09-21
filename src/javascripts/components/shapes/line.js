@@ -32,12 +32,18 @@ export default class LineComponent extends ShapeComponent {
   }
 
   onFullyDefine = () => {
-    if (!this.props.specialKeys.shift) return
+    // Remove the special key event listeners
+    this.props.disableSpecialKeys()
     // in shift mode after a line is completed start another line to draw a
     // polygon.
-    this.props.sketch.add(new Shape({
+    if (this.props.specialKeys.shift) this._continuePolygon()
+  }
+
+  _continuePolygon() {
+    let nextLine = new Shape({
       type: this.shapeType,
       points: [this.props.kernelElement.points[1]],
-    }))
+    })
+    this.props.sketch.add(nextLine)
   }
 }
