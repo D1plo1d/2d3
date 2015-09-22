@@ -8,9 +8,9 @@ var noop = function() {}
 module.exports = function clickDrag(opts = {}) {
   return function(Component) {
 
-    var touch = opts.touch == null ? opts.touch : true
+    var touch = opts.touch == null ? true : opts.touch
     var resetOnSpecialKeys = opts.resetOnSpecialKeys || false
-    var getSpecificEventData = opts.getSpecificEventData || function() { return {} }
+    var getSpecificEventData = opts.getSpecificEventData || () => {return {}}
 
     return class extends React.Component {
       state = {
@@ -23,46 +23,48 @@ module.exports = function clickDrag(opts = {}) {
         y: 0,
         deltaX: 0,
         deltaY: 0,
-        simulateMouseDown: () => this.setState({
-          simulatedMouseDown: true
-        }),
+        simulateMouseDown: () => this._simulateMouseDown(),
         simulateMouseUp: () => this._onMouseUp(),
       }
 
-      constructor() {
-        super()
-        this._onMouseDown = this._onMouseDown.bind(this)
-        this._onMouseUp = this._onMouseUp.bind(this)
-        this._onMouseMove = this._onMouseMove.bind(this)
-        this._wasUsingSpecialKeys = false
+      _wasUsingSpecialKeys = false
+
+      _domNode() {
+        return React.findDOMNode(this)
       }
 
       componentDidMount() {
-        var node = React.findDOMNode(this)
-
-        node.addEventListener('mousedown', this._onMouseDown)
-        document.addEventListener('mousemove', this._onMouseMove)
-        document.addEventListener('mouseup', this._onMouseUp)
-
-        if(touch) {
-          node.addEventListener('touchstart', this._onMouseDown)
-          document.addEventListener('touchmove', this._onMouseMove)
-          document.addEventListener('touchend', this._onMouseUp)
-        }
+        this._toggleListeners("on", document, this._globalButtonEvents())
+        this._toggleListeners("on", this._domNode(), this._localButtonEvents())
       }
 
       componentWillUnmount() {
-        var node = React.findDOMNode(this)
+        this._toggleListeners("off", document, this._globalButtonEvents())
+        this._toggleListeners("off", this._domNode(), this._localButtonEvents())
+      }
 
-        node.removeEventListener('mousedown', this._onMouseDown)
-        document.removeEventListener('mousemove', this._onMouseMove)
-        document.removeEventListener('mouseup', this._onMouseUp)
+      _localButtonEvents() {
+        let events = {mousedown: this._onMouseDown}
+        if(touch) events.touchstart = this._onMouseDown
+        return events
+      }
 
-        if(touch) {
-          node.removeEventListener('touchstart', this._onMouseDown)
-          document.removeEventListener('touchmove', this._onMouseMove)
-          document.removeEventListener('touchend', this._onMouseUp)
-        }
+      _globalButtonEvents() {
+        let events = {mouseup: this._onMouseUp}
+        if (touch) events.touchend = this._onMouseUp
+        return events
+      }
+
+      _mouseMoveEvents() {
+        let events = {mousemove: this._onMouseMove}
+        if (touch) events.touchmove = this._onMouseMove
+        return events
+      }
+
+      _toggleListeners(onOrOff, domElement, events) {
+        let add = onOrOff === "on"
+        let fnName = add ? "addEventListener" : "removeEventListener"
+        for(let k in events) domElement[fnName](k, events[k])
       }
 
       _setMousePosition(x, y) {
@@ -78,7 +80,13 @@ module.exports = function clickDrag(opts = {}) {
         })
       }
 
-      _onMouseDown(e) {
+      _simulateMouseDown() {
+        this.setState({simulatedMouseDown: true}, () => {
+          this._toggleListeners("on", document, this._mouseMoveEvents())
+        })
+      }
+
+      _onMouseDown = (e) => {
         // only left mouse button
         if(touch || e.button === 0 || this.state.simulatedMouseDown) {
           var pt = (e.changedTouches && e.changedTouches[0]) || e
@@ -87,9 +95,10 @@ module.exports = function clickDrag(opts = {}) {
 
           e.stopImmediatePropagation()
         }
+        this._toggleListeners("on", document, this._mouseMoveEvents())
       }
 
-      _onMouseUp(e) {
+      _onMouseUp = (e) => {
         if(this.state.isMouseDown || this.state.simulatedMouseDown) {
           this.setState({
             simulatedMouseDown: false,
@@ -99,9 +108,10 @@ module.exports = function clickDrag(opts = {}) {
 
           if (e != null) e.stopImmediatePropagation()
         }
+        this._toggleListeners("off", document, this._mouseMoveEvents())
       }
 
-      _onMouseMove(e) {
+      _onMouseMove = (e) => {
         if(this.state.isMouseDown || this.state.simulatedMouseDown) {
           var pt = (e.changedTouches && e.changedTouches[0]) || e
 

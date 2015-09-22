@@ -5,11 +5,9 @@ let globalState = {}
 let updateShift = function(e) {
   let isShift = !!e.shiftKey
   globalState.shift = isShift
-  console.log("UPDATE SHIFT", globalState)
 }
 
 let onFirstMouseMove = function(e) {
-  console.log("FIRST MOUSE MOVE")
   updateShift(e)
   window.removeEventListener("mousemove",  onFirstMouseMove)
 }
@@ -43,7 +41,6 @@ module.exports = function specialKeys(opts = {}) {
       }
 
       onKeyUpOrDown = (e) => {
-        console.log("CHANGE!", globalState)
         this.setState({specialKeys: globalState})
       }
 

@@ -1,6 +1,5 @@
 import React from "react"
 let {div} = React.DOM
-
 import Shape from "../../kernel/shape.coffee"
 import ShapeComponent from "../shape.js"
 import specialKeys from "../../higher_order_components/special_keys.js"

@@ -1,5 +1,7 @@
 import React from "react"
-let {circle} = React.DOM
+let {g, circle} = React.DOM
+import CSSModules from "react-css-modules"
+import styles from "../../stylesheets/components/point.styl"
 import clickDrag from "../higher_order_components/clickdrag.jsx"
 import cx from "classnames"
 import Point from "../kernel/point.coffee"
@@ -12,6 +14,7 @@ import Point from "../kernel/point.coffee"
  * - toKernelPx
  */
 @clickDrag()
+@CSSModules(styles)
 export default class PointComponent extends React.Component {
   displayName = "PointComponent"
 
@@ -85,21 +88,29 @@ export default class PointComponent extends React.Component {
 
   classNamesCx() {
     return cx("implicit-point", {
-      "data-selected": this.state.selected
+      "selected": this.state.selected
     })
   }
 
   render() {
-    return circle({
-      ref: "point",
-      className: this.classNamesCx(),
-      cx: this.props.kernelElement.x,
-      cy: this.props.kernelElement.y,
-      r: 5,
-      style: {
-        visibility: this.state.visible ? "visible" : "hidden",
-      },
-    })
+    return g({},
+      circle({
+        styleName: "clickable-area",
+        cx: this.props.kernelElement.x,
+        cy: this.props.kernelElement.y,
+        r: 10,
+      }),
+      circle({
+        ref: "point",
+        className: this.classNamesCx(),
+        cx: this.props.kernelElement.x,
+        cy: this.props.kernelElement.y,
+        r: 5,
+        style: {
+          visibility: this.state.visible ? undefined : "hidden",
+        },
+      }),
+    )
   }
 
 }
