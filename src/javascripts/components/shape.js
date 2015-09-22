@@ -15,12 +15,13 @@ let Point = require("../kernel/point.coffee")
  * - initialNumberOfPoints [Number]
  * - svgType [String]
  * - shapeType [String]
- * - create(fullyDefined [Boolean])
  * - initSvgElement()
  * - attrs()
  *
  * Optional:
  * - onFullyDefine()
+ * - create(fullyDefined [Boolean])
+ * - visible()
  */
 export default class ShapeComponent extends React.Component {
   // These variables must be overriden by classes this is mixed into
@@ -31,7 +32,6 @@ export default class ShapeComponent extends React.Component {
   static defaultState = {
     guides: [],
     numberOfPoints: undefined,
-    visible: false,
   }
 
   componentWillMount() {
@@ -45,6 +45,11 @@ export default class ShapeComponent extends React.Component {
     // call the shape's create method with the ui flag for shape-specific
     // intialization
     this.create()
+  }
+
+  create() {
+    if (this.props.kernelElement.isFullyDefined()) return
+    this.addNthPoint(this.props.kernelElement.points.length)
   }
 
   addNthPoint(n) {
@@ -73,14 +78,23 @@ export default class ShapeComponent extends React.Component {
     this.forceUpdate()
   }
 
+  points() {
+    return this.props.kernelElement.points
+  }
+
   // # adds and and initializes a guide (a graphical element for shape
   // # constructing purposes) to this shape
   // _addGuide: (guideElement) ->
   //   this.guides.push guideElement
   //   return guideElement
 
+  visible() {
+    let numberOfPoints = this.props.kernelElement.requiredPointCount()
+    return this.points().filter((p) => p.initialized).length == numberOfPoints
+  }
+
   render() {
-    let attrs = _.merge(this.attrs(), {visible: this.state.visible})
+    let attrs = this.visible() ? this.attrs() : {style: {visibility: "hidden"}}
     return React.DOM[this.svgType](attrs)
   }
 

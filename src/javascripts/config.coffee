@@ -12,6 +12,7 @@ module.exports = Config =
   shapeComponents: {
     point: require "./components/point.js"
     line: require "./components/shapes/line.js"
+    circle: require "./components/shapes/circle.js"
   }
 
   # Helper method to convert shape components into factories

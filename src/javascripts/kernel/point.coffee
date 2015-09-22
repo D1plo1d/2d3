@@ -23,6 +23,9 @@ module.exports = class Point extends SketchElement
     return if input
     @emit "diff", type: "change", x: @x, y: @y
 
+  distanceTo: (p2) ->
+    Math.sqrt( Math.pow(@x - p2.x, 2) + Math.pow(@y - p2.y, 2) )
+
   # Sets the vectors elements to those of the nearest point within snapping
   # distance or leaves them unchanged if there is no point close enough to
   # snap to.
@@ -39,7 +42,7 @@ module.exports = class Point extends SketchElement
 
       # check if the other point is within snapping distance of this point and
       # it is the nearest point
-      distance = Math.sqrt( Math.pow(@x - p2.x, 2) + Math.pow(@y - p2.y, 2) )
+      distance = @distanceTo(p2)
       continue unless distance <= snapDistance and distance < nearestDistance
 
       nearestDistance = distance

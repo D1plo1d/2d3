@@ -41,7 +41,7 @@ module.exports = class Shape extends SketchElement
   requiredPointCount: ->
     switch @type
       when "line" then 2
-      when "circle" then 1
+      when "circle" then 2 # The second point is invisible on the circumference
 
   cancel: =>
     @delete(@) unless @isFullyDefined()

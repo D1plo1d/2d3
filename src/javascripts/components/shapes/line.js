@@ -1,10 +1,13 @@
 import React from "react"
 let {div} = React.DOM
+import CSSModules from "react-css-modules"
+import styles from "../../../stylesheets/components/shapes/line.styl"
 import Shape from "../../kernel/shape.coffee"
 import ShapeComponent from "../shape.js"
 import specialKeys from "../../higher_order_components/special_keys.js"
 
 @specialKeys()
+@CSSModules(styles)
 export default class LineComponent extends ShapeComponent {
   displayName = "LineComponent"
 
@@ -12,22 +15,18 @@ export default class LineComponent extends ShapeComponent {
   shapeType = "line"
 
   state = Object.assign({}, ShapeComponent.defaultState, {
-    numberOfPoints: 2,
-    specialKeys: {shift: false}
   })
 
-  create() {
-    if (this.props.kernelElement.isFullyDefined()) return
-    this.addNthPoint(this.props.kernelElement.points.length)
-  }
-
   attrs() {
-    return {d: this._path()}
+    return {
+      // styleName: "line",
+      d: this._path(),
+    }
   }
 
   _path() {
-    let p = this.props.kernelElement.points.filter((p) => p.initialized)
-    return p.length == 2 ? `M${p[0].x},${p[0].y}L${p[1].x},${p[1].y}` : ""
+    let p = this.points()
+    return `M${p[0].x},${p[0].y}L${p[1].x},${p[1].y}`
   }
 
   onFullyDefine = () => {
@@ -41,8 +40,9 @@ export default class LineComponent extends ShapeComponent {
   _continuePolygon() {
     let nextLine = new Shape({
       type: this.shapeType,
-      points: [this.props.kernelElement.points[1]],
+      points: [this.points()[1]],
     })
     this.props.sketch.add(nextLine)
   }
+
 }

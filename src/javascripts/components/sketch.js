@@ -18,7 +18,7 @@ export default class SketchComponent extends React.Component {
     zoomLevel: 1,
   }
 
-  _shapeKeys = ["line"]
+  _shapeKeys = ["line", "circle"]
 
   componentWillMount() {
     this._sketchWillChange(this.props.sketch)
