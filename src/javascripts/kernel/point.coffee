@@ -4,6 +4,8 @@ module.exports = class Point extends SketchElement
   x: 0, y: 0
   initialized: false
   placed: false
+  hidden: false
+  snappable: true
   # Default snapping distance for all points
   @snapDistance = 10
   type: "point"
@@ -12,13 +14,16 @@ module.exports = class Point extends SketchElement
     @placed = true
     @emit "place"
 
+  drag: () ->
+    @emit "dragStart"
+
   # Moves this point. If input is set to true (default) this move will be
   # treated as input to the constraint solver and the constraints will
   # orient themselves to anchor the point at the given position.
   # If anchor is set to false this is a constraint solver generated movement.
   move: (@x, @y, input = true, snapDistance = Point.snapDistance) ->
     @initialized = true
-    @_snapToNearestPoint snapDistance if input and @sketch?
+    @_snapToNearestPoint snapDistance if input and @sketch? and @snappable
     @emit "move"
     return if input
     @emit "diff", type: "change", x: @x, y: @y
@@ -38,7 +43,7 @@ module.exports = class Point extends SketchElement
 
     for p2 in @sketch.points
       # check that the other point is not this point
-      continue if @ == p2 or p2.isDeleted()
+      continue if @ == p2 or p2.isDeleted() or !p2.snappable
 
       # check if the other point is within snapping distance of this point and
       # it is the nearest point

@@ -28,13 +28,17 @@ export default class PointComponent extends React.Component {
     // placement
     this.setState({visible: this.props.kernelElement.placed})
     // Binding events
-    this.props.kernelElement.on("move", this._onMove)
+    this.props.kernelElement
+      .on("move", this._onMove)
+      .on("dragStart", this.simulateDragStart)
     // Starting the placement of the point
     if (!this.props.kernelElement.placed) this._startPlacement()
   }
 
   componentWillUnmount() {
-    this.props.kernelElement.off("move", this._onMove)
+    this.props.kernelElement
+      .off("move", this._onMove)
+      .off("dragStart", this.simulateDragStart)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -51,6 +55,10 @@ export default class PointComponent extends React.Component {
 
   _onMove = () => {
     this.forceUpdate()
+  }
+
+  simulateDragStart = () => {
+    this.props.clickDrag.simulateMouseDown()
   }
 
   _startPlacement() {
@@ -92,22 +100,30 @@ export default class PointComponent extends React.Component {
     })
   }
 
+  point() {
+    return this.props.kernelElement
+  }
+
+  visible() {
+    return this.state.visible && !this.point().hidden
+  }
+
   render() {
     return g({},
       circle({
         styleName: "clickable-area",
-        cx: this.props.kernelElement.x,
-        cy: this.props.kernelElement.y,
+        cx: this.point().x,
+        cy: this.point().y,
         r: 10,
       }),
       circle({
         ref: "point",
         className: this.classNamesCx(),
-        cx: this.props.kernelElement.x,
-        cy: this.props.kernelElement.y,
+        cx: this.point().x,
+        cy: this.point().y,
         r: 5,
         style: {
-          visibility: this.state.visible ? undefined : "hidden",
+          visibility: this.visible() ? undefined : "hidden",
         },
       }),
     )

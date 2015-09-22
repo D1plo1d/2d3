@@ -31,7 +31,6 @@ export default class ShapeComponent extends React.Component {
 
   static defaultState = {
     guides: [],
-    numberOfPoints: undefined,
   }
 
   componentWillMount() {
@@ -55,6 +54,7 @@ export default class ShapeComponent extends React.Component {
   addNthPoint(n) {
     if (this.props.kernelElement.isFullyDefined()) return
     let point = new Point()
+    if (this.beforeAddNthPoint != null) this.beforeAddNthPoint(n, point)
     this.props.sketch.add(point)
     this.props.kernelElement.add(point)
     point.on("place", this.addNthPoint.bind(this, n+1))

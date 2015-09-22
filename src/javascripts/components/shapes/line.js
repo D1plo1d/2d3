@@ -1,5 +1,4 @@
 import React from "react"
-let {div} = React.DOM
 import CSSModules from "react-css-modules"
 import styles from "../../../stylesheets/components/shapes/line.styl"
 import Shape from "../../kernel/shape.coffee"
@@ -14,8 +13,7 @@ export default class LineComponent extends ShapeComponent {
   svgType = "path"
   shapeType = "line"
 
-  state = Object.assign({}, ShapeComponent.defaultState, {
-  })
+  state = Object.assign({}, ShapeComponent.defaultState)
 
   attrs() {
     return {
