@@ -1,6 +1,6 @@
 {
   "name": "mechly",
-  "version": "0.1.4",
+  "version": "0.1.0",
   "private": false,
   "main": "src/javascripts/mechly.coffee",
   "dependencies": {
@@ -17,6 +17,7 @@
     "babel-core": "5.8.20",
     "coffee-loader": "*",
     "jade-loader": "*",
+    "worker-loader": "*",
     "react": "0.13.3",
     "react-css-modules": "*",
     "babel-plugin-lodash": "*",
