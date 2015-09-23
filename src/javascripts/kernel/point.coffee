@@ -1,4 +1,5 @@
 SketchElement = require "./sketch_element.coffee"
+Vector = require "./vector.js"
 
 module.exports = class Point extends SketchElement
   x: 0, y: 0
@@ -28,8 +29,8 @@ module.exports = class Point extends SketchElement
     return if input
     @emit "diff", type: "change", x: @x, y: @y
 
-  distanceTo: (p2) ->
-    Math.sqrt( Math.pow(@x - p2.x, 2) + Math.pow(@y - p2.y, 2) )
+  distanceTo: Vector.prototype.distanceTo
+  subtract: Vector.prototype.subtract
 
   # Sets the vectors elements to those of the nearest point within snapping
   # distance or leaves them unchanged if there is no point close enough to

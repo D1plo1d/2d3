@@ -10,9 +10,10 @@ module.exports = Config =
   #   A component could be added via:
   #   `Mechly.config.shapeComponents.set "myShape", MyShape`
   shapeComponents: {
-    point: require "./components/point.js"
     line: require "./components/shapes/line.js"
     circle: require "./components/shapes/circle.js"
+    arc: require "./components/shapes/arc.js"
+    point: require "./components/point.js"
   }
 
   # Helper method to convert shape components into factories

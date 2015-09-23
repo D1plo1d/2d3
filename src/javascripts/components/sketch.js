@@ -18,7 +18,7 @@ export default class SketchComponent extends React.Component {
     zoomLevel: 1,
   }
 
-  _shapeKeys = ["line", "circle"]
+  _shapeKeys = Object.keys(config.shapeComponents)
 
   componentWillMount() {
     this._sketchWillChange(this.props.sketch)
@@ -80,13 +80,9 @@ export default class SketchComponent extends React.Component {
     for (let args in this._keyboardEvents) Mousetrap[bind_or_unbind](...args)
   }
 
-  _addPoint = (e) => {
-    this.props.sketch.add(new Point())
-    if (e != null) e.stopPropagation()
-  }
-
-  _addShape = (type, e) => {
-    this.props.sketch.add(new Shape({type}))
+  _add = (type, e) => {
+    let shape = type == "point" ? new Point() : new Shape({type})
+    this.props.sketch.add(shape)
     if (e != null) e.stopPropagation()
   }
 
@@ -124,7 +120,7 @@ export default class SketchComponent extends React.Component {
       div({styleName: "svg-container"},
         svg({styleName: "svg"},
           // Text
-          g({key: "textGroup"}),
+          // g({key: "textGroup"}),
           // Points
           this._scaledGroup("points"),
           // Guides
@@ -140,15 +136,10 @@ export default class SketchComponent extends React.Component {
             this._shapeKeys.map((k) => {
               return li({
                 className: `btn-${k} ${k}`,
-                onClick: _.partial(this._addShape, k),
+                onClick: _.partial(this._add, k),
                 key: k,
               }, k)
             }),
-            li({
-              className: "btn-point point",
-              onClick: this._addPoint,
-              key: "point",
-            }, "point"),
           ),
         ),
       ),

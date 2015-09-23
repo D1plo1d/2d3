@@ -66,8 +66,8 @@ export default class ShapeComponent extends React.Component {
     this.props.sketch.updateSelection()
   }
 
-  onFullyDefine() {
-    /* noop */
+  onFullyDefine = () => {
+    this.forceUpdate()
   }
 
   _onRemovePoint = (point) => {
@@ -80,6 +80,10 @@ export default class ShapeComponent extends React.Component {
 
   points() {
     return this.props.kernelElement.points
+  }
+
+  initializedPoints() {
+    return this.points().filter((p) => p.initialized)
   }
 
   // # adds and and initializes a guide (a graphical element for shape
