@@ -1,26 +1,25 @@
 # A Worker for geometric constraint solving!!
 
+# #isWorker = (self.document == undefined)
+# isWorker = true
 
-#isWorker = (self.document == undefined)
-isWorker = true
+# # If we aren't a worker, this code will instead give us the URL to create the worker!
 
-# If we aren't a worker, this code will instead give us the URL to create the worker!
+# if !isWorker
 
-if !isWorker
+#   webWorkerFn = arguments.callee
+#   _webWorkerURL = undefined
+#   # Getting a blob url reference to this script's closure
+#   webWorkerURL = ->
+#     return _webWorkerURL if _webWorkerURL?
+#     # Removing the closure from the worker's js because it caused syntax issues in chrome 24
+#     str = webWorkerFn.toString()
+#     str = str.replace(/^\s*function\s*\(\) {/, "").replace(/}\s*$/, '')
 
-  webWorkerFn = arguments.callee
-  _webWorkerURL = undefined
-  # Getting a blob url reference to this script's closure
-  webWorkerURL = ->
-    return _webWorkerURL if _webWorkerURL?
-    # Removing the closure from the worker's js because it caused syntax issues in chrome 24
-    str = webWorkerFn.toString()
-    str = str.replace(/^\s*function\s*\(\) {/, "").replace(/}\s*$/, '')
+#     webWorkerBlob = new Blob [str], type: "text/javascript"
+#     _webWorkerURL = (window.URL || window.webkitURL).createObjectURL webWorkerBlob
 
-    webWorkerBlob = new Blob [str], type: "text/javascript"
-    _webWorkerURL = (window.URL || window.webkitURL).createObjectURL webWorkerBlob
-
-  return
+#   return
 
 
 # This code is being written with the idea of
@@ -520,11 +519,9 @@ message_changes = () ->
     dy = Math.abs(varmap[2*n + 1] - initial[2*n + 1])
     if dx + dy > 0.01
       diff.push {id: pointIDs[n], x: varmap[2*n], y: varmap[2*n + 1]}
-  console.log {type: "diff", diff: diff}
+  self.postMessage {type: "diff", diff: diff}
 
-
-
-onmessage = (event) ->
+receiveDiff = (event) ->
   if event.type == "add_point"
     nPoints += 1
     pointIndex = 2*nPoints - 2
@@ -547,17 +544,19 @@ onmessage = (event) ->
     pointIDs.splice(n,1)
     varmap.set(varmap.subarray(2*n+2), 2*n)
 
-
+self.onmessage = (event) ->
+  receiveDiff(diff) for diff in event.data
+  resolve()
 
 # Testing!!!
 
-onmessage({type: "add_point", x: 0, y: 0, id: 331 })
-onmessage({type: "add_point", x: 1, y: 1, id: 332 })
-onmessage({type: "add_point", x: 2, y: 2, id: 525 })
-onmessage({type: "add_constraint", constraint: distance(331, 332, 30)})
-#onmessage({type: "add_constraint", constraint: distance(332, 525, 10)})
-onmessage({type: "add_constraint", constraint: coradial(331,332, 525)})
-#onmessage({type: "add_point", x: 2, y: 2, id: 527 })
-#onmessage({type: "move_point", x: 5, y: -5, id: 331 })
+# receiveDiff({type: "add_point", x: 0, y: 0, id: 331 })
+# receiveDiff({type: "add_point", x: 1, y: 1, id: 332 })
+# receiveDiff({type: "add_point", x: 2, y: 2, id: 525 })
+# receiveDiff({type: "add_constraint", constraint: distance(331, 332, 30)})
+# #receiveDiff({type: "add_constraint", constraint: distance(332, 525, 10)})
+# receiveDiff({type: "add_constraint", constraint: coradial(331,332, 525)})
+# #receiveDiff({type: "add_point", x: 2, y: 2, id: 527 })
+# #receiveDiff({type: "move_point", x: 5, y: -5, id: 331 })
 
-resolve()
+# resolve()

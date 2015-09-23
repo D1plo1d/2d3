@@ -1,7 +1,9 @@
 EventEmitter = require("eventemitter3")
 Shape = require("./shape.coffee")
 Point = require("./point.coffee")
-Constraint = {} #require("") # TODO: constraints
+ConstraintWorker = require(
+  "worker?inline=true!../constraint_solver/constraint_worker.coffee"
+)
 
 module.exports = class Sketch extends EventEmitter
   # All the points in the sketch
@@ -18,6 +20,8 @@ module.exports = class Sketch extends EventEmitter
   constructor: (string) ->
     @[a] = [] for a in ['points', 'shapes', 'constraints', 'selected', '_diffs']
     deserialize(string) if string?
+    @constraintWorker = new ConstraintWorker()
+    @constraintWorker.onmessage = @_receiveConstraintsUpdate
 
   add: (obj) ->
     type = switch obj.constructor
@@ -28,6 +32,15 @@ module.exports = class Sketch extends EventEmitter
     obj.sketch = @
     @_addDiffListener(type, obj) if type != "shape"
     obj.on "delete", @_onObjDelete.bind @, type
+    # Update the constraint solver
+    if type == "point"
+      @_diffs.push({
+        type: "add_point",
+        id: obj.id
+        x: obj.x
+        y: obj.y
+      })
+      @requestConstraintsUpdate()
     @emit "add", obj, type
 
   _addDiffListener: (type, obj) ->
@@ -37,6 +50,7 @@ module.exports = class Sketch extends EventEmitter
 
   _onDiff: (objInfo, diff) =>
     @_diffs.push _.merge {}, objInfo, diff
+    @requestConstraintsUpdate()
 
   _onObjDelete: (type, obj) =>
     _.remove @["#{type}s"], obj
@@ -89,13 +103,17 @@ module.exports = class Sketch extends EventEmitter
     # touch screen) and create useful results without bashing the constraint
     # solver with partial updates.
 
-    # TODO: send the diff to the constraint solver
-
+    # send the diff to the constraint solver
+    @constraintWorker.postMessage(@_diffs)
+    # @constraintWorker.postMessage("test")
+    # console.log("REQUESTING!", @_diffs)
     # Resetting the diff
     @_diffs = []
 
-  _receiveConstraintsUpdate: (diffs) ->
-    console.log diffs
+  _receiveConstraintsUpdate: (e) =>
+    # for diff in e.data.diff
+    #   point = this.points.find((p) => p.id == diff.id)
+    #   point.move(diff.x, diff.y, false) if point?
 
   serialize: () ->
     JSON.stringify

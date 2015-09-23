@@ -14,6 +14,12 @@ module.exports =
   plugins: [
     new ExtractTextPlugin 'app.css', allChunks: true
   ]
+  worker: {
+    output: {
+      filename: "hash.worker.js",
+      chunkFilename: "[id].hash.worker.js"
+    }
+  }
   module:
     loaders: [
       {

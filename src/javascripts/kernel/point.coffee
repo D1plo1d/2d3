@@ -26,8 +26,8 @@ module.exports = class Point extends SketchElement
     @initialized = true
     @_snapToNearestPoint snapDistance if input and @sketch? and @snappable
     @emit "move"
-    return if input
-    @emit "diff", type: "change", x: @x, y: @y
+    return if !input
+    @emit "diff", type: "move_point", x: @x, y: @y
 
   distanceTo: Vector.prototype.distanceTo
   subtract: Vector.prototype.subtract
