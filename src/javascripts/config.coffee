@@ -13,6 +13,7 @@ module.exports = Config =
     line: require "./components/shapes/line.js"
     circle: require "./components/shapes/circle.js"
     arc: require "./components/shapes/arc.js"
+    quadraticBezier: require "./components/shapes/quadratic_bezier.js"
     point: require "./components/point.js"
   }
 
