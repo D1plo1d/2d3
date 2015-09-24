@@ -44,6 +44,7 @@ module.exports = class Shape extends SketchElement
       when "circle" then 2 # The second point is invisible on the circumference
       when "arc" then 3
       when "quadraticBezier" then 3
+      when "cubicBezier" then 4
       else
         throw "invalid shape type #{@type}"
 

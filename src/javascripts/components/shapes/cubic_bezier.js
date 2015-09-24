@@ -16,7 +16,7 @@ export default class QuadraticBezierComponent extends ShapeComponent {
   _shouldShowGuides() {
     let pointCount = this.initializedPoints().length
     // if (this.props.kernelElement.isFullyDefined()) return false
-    return pointCount == 3
+    return pointCount >= 3
   }
 
   _bezier() {
@@ -26,27 +26,35 @@ export default class QuadraticBezierComponent extends ShapeComponent {
         var d = `M${p[0].x},${p[0].y}L${p[1].x},${p[1].y}`
         break
       case 3:
-        var d = `M${p[0].x},${p[0].y} Q${p[2].x},${p[2].y} ${p[1].x},${p[1].y}`
+      case 4:
+        var d = `
+          M${p[0].x},${p[0].y} C${(p[3]||p[1]).x},${(p[3]||p[1]).y}
+          ${p[2].x},${p[2].y} ${p[1].x},${p[1].y}
+        `
         break
       default:
         return
     }
-    return React.DOM.path({styleName: "bezier", d})
+    return React.DOM.path({styleName: "bezier", d: d.replace("\n", " ")})
+  }
+
+  _guideLine(p1, p2) {
+    if (p2 == null) return
+    return React.DOM.path({
+      styleName: "guide",
+      d: `M${p1.x},${p1.y}L${p2.x},${p2.y}`,
+    })
   }
 
   // the guides for interactive element creation
   _constructionGuides() {
     if (!this._shouldShowGuides()) return []
-    let {path} = React.DOM
     let p = this.initializedPoints()
     // Create a guide for each initialized point excluding the 3rd one
-    let endPoints = [p[0], p[1]]
-    return endPoints.map( (endPoint) => {
-      return path({
-        styleName: "guide",
-        d: `M${endPoint.x},${endPoint.y}L${p[2].x},${p[2].y}`,
-      })
-    })
+    return [
+      this._guideLine(p[0], p[3]),
+      this._guideLine(p[1], p[2]),
+    ]
   }
 
   render() {
