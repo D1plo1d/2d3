@@ -64,6 +64,7 @@ export default class ShapeComponent extends React.Component {
     point.on("move", this._onPointMove)
     // if this shape is selected style the newly added point appropriately
     this.props.sketch.updateSelection()
+    if (this.afterAddNthPoint != null) this.afterAddNthPoint()
   }
 
   onFullyDefine = () => {

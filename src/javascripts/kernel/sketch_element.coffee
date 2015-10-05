@@ -11,7 +11,7 @@ module.exports = class SketchElement extends EventEmitter
     @[k] = v || @[k] for k, v of opts
     # Set the auto-increment id
     @id = SketchElement.idCounter
-    SketchElement.idCounter +=1
+    SketchElement.idCounter += 1
     # sub-class specific initialization
     setTimeout(@_init, 0)
 

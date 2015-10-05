@@ -1,6 +1,7 @@
 EventEmitter = require("eventemitter3")
 Shape = require("./shape.coffee")
 Point = require("./point.coffee")
+Constraint = require("./constraint.js")
 ConstraintWorker = require(
   "worker?inline=true!../constraint_solver/constraint_worker.coffee"
 )
@@ -36,16 +37,24 @@ module.exports = class Sketch extends EventEmitter
     if type == "point"
       @_diffs.push({
         type: "add_point",
-        id: obj.id
-        x: obj.x
+        id: obj.id,
+        x: obj.x,
         y: obj.y
+      })
+      @requestConstraintsUpdate()
+    if type == "constraint"
+      console.log
+        type: "add_constraint",
+        constraint: obj.params
+      @_diffs.push({
+        type: "add_constraint",
+        constraint: obj.params
       })
       @requestConstraintsUpdate()
     @emit "add", obj, type
 
   _addDiffListener: (type, obj) ->
-    id = @["#{type}s"].indexOf(obj)
-    fn = _.partial @_onDiff, id: id, objectType: type
+    fn = _.partial @_onDiff, id: obj.id, objectType: type
     obj.on "diff", fn
 
   _onDiff: (objInfo, diff) =>
@@ -106,14 +115,13 @@ module.exports = class Sketch extends EventEmitter
     # send the diff to the constraint solver
     @constraintWorker.postMessage(@_diffs)
     # @constraintWorker.postMessage("test")
-    # console.log("REQUESTING!", @_diffs)
     # Resetting the diff
     @_diffs = []
 
   _receiveConstraintsUpdate: (e) =>
-    # for diff in e.data.diff
-    #   point = this.points.find((p) => p.id == diff.id)
-    #   point.move(diff.x, diff.y, false) if point?
+    for diff in e.data.diff
+      point = this.points.find((p) => p.id == diff.id)
+      point.move(diff.x, diff.y, false) if point?
 
   serialize: () ->
     JSON.stringify

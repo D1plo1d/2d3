@@ -2,6 +2,7 @@ import React from "react"
 import CSSModules from "react-css-modules"
 import styles from "../../../stylesheets/components/shapes/arc.styl"
 import ShapeComponent from "../shape.js"
+import Constraint from "../../kernel/constraint.js"
 import _ from "lodash"
 
 @CSSModules(styles)
@@ -21,14 +22,17 @@ export default class ArcComponent extends ShapeComponent {
   }
 
   // TODO: Constraints
-  // _afterPointAdded(point) {
-  //   if (this.points.length == 3) {
-  //     this.constraint = this.sketch.coradialC({
-  //       center: this.points[0],
-  //       points: this.points[1..2]
-  //     })
-  //   }
-  // }
+  afterAddNthPoint() {
+    let p = this.points()
+    console.log(this.points().length)
+    if (this.points().length == 3) {
+      this.constraint = this.props.sketch.add(new Constraint({
+        type: "coradial",
+        centerID: p[0].id,
+        pointIDs: [p[1], p[2]].map(({id}) => id)
+      }))
+    }
+  }
 
   // TODO: constraint
   // _afterDelete() {
@@ -42,7 +46,6 @@ export default class ArcComponent extends ShapeComponent {
 
   _shouldShowGuides() {
     let pointCount = this.initializedPoints().length
-    console.log(this.props.kernelElement.isFullyDefined())
     if (this.props.kernelElement.isFullyDefined()) return false
     return pointCount == 2 || pointCount == 3
   }

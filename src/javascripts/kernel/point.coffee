@@ -44,7 +44,7 @@ module.exports = class Point extends SketchElement
 
     for p2 in @sketch.points
       # check that the other point is not this point
-      continue if @ == p2 or p2.isDeleted() or !p2.snappable
+      continue if @ == p2 or p2.isDeleted() or !p2.snappable or !p2.placed
 
       # check if the other point is within snapping distance of this point and
       # it is the nearest point
